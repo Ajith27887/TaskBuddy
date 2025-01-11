@@ -1,0 +1,18 @@
+.Task-Container {
+  .board {
+    text-decoration: underline;
+  }
+  .filter {
+    color: rgba(0, 0, 0, 0.6);
+  }
+  .Category {
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 25px;
+    option {
+      margin-top: 10px;
+      border-radius: 10px;
+      padding: 20px;
+      margin-right: 10px;
+    }
+  }
+}

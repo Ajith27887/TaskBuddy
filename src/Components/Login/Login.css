@@ -32,7 +32,8 @@ Col {
   z-index: 1;
   object-fit: contain;
   width: 100%;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25);
 }
 .login-btn {
-  border-radius: 18px;
+  border-radius: 14px !important;
 }
