@@ -1,4 +1,4 @@
-import { useState, useContext, useEffect, useRef } from "react";
+import { useContext, useEffect } from "react";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Modal from "react-bootstrap/Modal";
@@ -16,9 +16,30 @@ function CreateTask() {
       selectedDate,
       setSelectedDate,
       setTaskStatus,
+      setTitle,
+      setTaskData,
       taskStatus,
+      title,
+      taskData,
     } = useContext(TaskContext),
-    handleClose = () => setShow(false),
+    handleClose = () => {
+      setTaskData((prevTasks) => [
+        ...prevTasks,
+        {
+          id: taskData.length + 1,
+          title: title,
+          Date: selectedDate,
+          status: taskStatus,
+          category: category,
+        },
+      ]);
+      setTitle("");
+      setSelectedDate(new Date());
+      setTaskStatus("");
+      setCategory("");
+
+      setShow(false);
+    },
     handleWork = (e) => {
       e.preventDefault();
       setCategory("Work");
@@ -29,12 +50,14 @@ function CreateTask() {
     },
     handleStatusChange = (e) => {
       setTaskStatus(e.target.value);
+    },
+    handleTitle = (e) => {
+      setTitle(e.target.value);
     };
 
   useEffect(() => {
-    console.log(show);
-    console.log(taskStatus, "taskStatus");
-  }, [taskStatus]);
+    console.log(taskData, "data");
+  }, [taskData]);
   console.log(show, "show");
 
   return (
@@ -46,7 +69,12 @@ function CreateTask() {
         <Modal.Body className="custom-modal-body">
           <Form>
             <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-              <Form.Control type="text" placeholder="Task title" autoFocus />
+              <Form.Control
+                type="text"
+                onChange={handleTitle}
+                placeholder="Task title"
+                autoFocus
+              />
             </Form.Group>
             <Form.Group
               className="mb-3"

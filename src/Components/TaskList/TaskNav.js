@@ -15,7 +15,7 @@ import { TaskContext } from "../TaskContext/TaskContext.tsx";
 
 function TaskNav() {
   const navigate = useNavigate(),
-    [selectedDate, setSelectedDate] = useState(new Date()),
+    [setSelectedDate] = useState(new Date()),
     { currentUser } = useAuth(),
     { setShow } = useContext(TaskContext);
 
