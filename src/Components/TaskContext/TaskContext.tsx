@@ -16,6 +16,7 @@ interface TaskContextType {
   title: string;
   setTaskData: (taskData: object) => void;
   taskData: object;
+  handleChange: (file: File) => void;
 }
 
 // Create the context with a default value
@@ -34,7 +35,11 @@ const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [taskStatus, setTaskStatus] = useState<string>("");
   const [title, setTitle] = useState<string>("");
-  const [taskData, setTaskData] = useState({});
+  const [taskData, setTaskData] = useState<object>({});
+  const [file, setFile] = useState<File | null>(null);
+  const handleChange = (file: File) => {
+    setFile(file);
+  };
 
   const addTask = (task: string) => {
     setTasks((prevTasks) => [...prevTasks, task]);
@@ -56,6 +61,7 @@ const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
         setTitle,
         title,
         setTaskData,
+        handleChange,
         taskData,
       }}
     >

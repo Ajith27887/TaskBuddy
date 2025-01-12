@@ -1,4 +1,4 @@
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Modal from "react-bootstrap/Modal";
@@ -6,6 +6,8 @@ import { TaskContext } from "../TaskContext/TaskContext.tsx";
 import "./Sass/CreateTask.scss";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker-cssmodules.css";
+import { supabase } from "../Supabase/Supabase.js";
+import { useAuth } from "../AuthContext/AuthContext.tsx";
 
 function CreateTask() {
   const {
@@ -17,27 +19,63 @@ function CreateTask() {
       setSelectedDate,
       setTaskStatus,
       setTitle,
-      setTaskData,
+      handleChange,
       taskStatus,
       title,
       taskData,
     } = useContext(TaskContext),
-    handleClose = () => {
-      setTaskData((prevTasks) => [
-        ...prevTasks,
-        {
-          id: taskData.length + 1,
-          title: title,
-          Date: selectedDate,
-          status: taskStatus,
-          category: category,
-        },
-      ]);
+    { currentUser } = useAuth();
+  const [dragActive, setDragActive] = useState(false);
+
+  const handleDrag = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.type === "dragenter" || e.type === "dragover") {
+      setDragActive(true);
+    } else if (e.type === "dragleave") {
+      setDragActive(false);
+    }
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragActive(false);
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      handleChange(e.dataTransfer.files[0]);
+    }
+  };
+
+  const handleFileChange = (e) => {
+    if (e.target.files && e.target.files[0]) {
+      handleChange(e.target.files[0]);
+    }
+  };
+  const handleClose = async () => {
+      const newTask = {
+        title: title,
+        // Date: selectedDate,
+        status: taskStatus,
+        category: category,
+        user_name: currentUser.displayName,
+        user_id: currentUser.email,
+      };
+      // Upload task data to Supabase
+      try {
+        const { data, error } = await supabase.from("todo").insert([newTask]);
+
+        if (error) {
+          console.error("Error inserting task:", error);
+        } else {
+          console.log("Task inserted successfully:", data);
+        }
+      } catch (err) {
+        console.error("Unexpected error:", err);
+      }
       setTitle("");
       setSelectedDate(new Date());
       setTaskStatus("");
       setCategory("");
-
       setShow(false);
     },
     handleWork = (e) => {
@@ -74,13 +112,14 @@ function CreateTask() {
                 onChange={handleTitle}
                 placeholder="Task title"
                 autoFocus
+                required
               />
             </Form.Group>
             <Form.Group
               className="mb-3"
               controlId="exampleForm.ControlTextarea1"
             >
-              <Form.Control as="textarea" rows={3} />
+              <Form.Control required as="textarea" rows={3} />
             </Form.Group>
             <Form.Group className="d-flex justify-content-between">
               <div>
@@ -132,7 +171,7 @@ function CreateTask() {
                   <option value="" disabled selected hidden>
                     Choose
                   </option>
-                  <option value="to-do">TO-DO</option>
+                  <option value="Todo">TO-DO</option>
                   <option value="in-progress">In-progress</option>
                   <option value="Completed">Completed</option>
                 </select>
