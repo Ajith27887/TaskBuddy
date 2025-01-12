@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useContext } from "react";
 import { Button, Container, Col, Row } from "react-bootstrap";
 import { auth } from "../FireBase/Firebase";
 import { useNavigate } from "react-router";
@@ -11,50 +11,30 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker-cssmodules.css";
 import { useAuth } from "../AuthContext/AuthContext.tsx";
 import { BiLogOut } from "react-icons/bi";
+import { TaskContext } from "../TaskContext/TaskContext.tsx";
 
 function TaskNav() {
   const navigate = useNavigate(),
     [selectedDate, setSelectedDate] = useState(new Date()),
-    { currentUser } = useAuth();
+    { currentUser } = useAuth(),
+    { setShow } = useContext(TaskContext);
+
+  const handleShow = useCallback(
+    (e) => {
+      e.preventDefault();
+      setShow(true);
+      console.log("popup");
+    },
+    [setShow]
+  );
+
   const logout = useCallback(() => {
     auth.signOut();
     navigate("/");
   }, [navigate]);
 
-  const {
-    displayName = "",
-    email = "",
-    photoURL = "",
-    emailVerified,
-    uid,
-  } = currentUser || {};
+  const { displayName = "", photoURL = "" } = currentUser || {};
   console.log(currentUser, "url");
-
-  //   const [selectedDates, setSelectedDates] = useState([]);
-  //   const [isSelecting, setIsSelecting] = useState(false);
-  //   const [startDate, setStartDate] = useState(null);
-
-  //   const handleMouseDown = (date) => {
-  //     setIsSelecting(true);
-  //     setStartDate(date);
-  //     setSelectedDates([date]);
-  //   };
-
-  //   const handleMouseMove = (date) => {
-  //     if (isSelecting && startDate !== date) {
-  //       const allDates = [];
-  //       let currentDate = new Date(startDate);
-  //       while (currentDate <= date) {
-  //         allDates.push(new Date(currentDate));
-  //         currentDate.setDate(currentDate.getDate() + 1);
-  //       }
-  //       setSelectedDates(allDates);
-  //     }
-  //   };
-
-  //   const handleMouseUp = () => {
-  //     setIsSelecting(false);
-  //   };
 
   return (
     <Container fluid className="p-5 Task-Container">
@@ -100,15 +80,12 @@ function TaskNav() {
                 dateFormat="dd/MM/yyyy"
                 showMonthDropdown
                 showYearDropdown
-                // onDayMouseUp={handleMouseUp}
                 dropdownMode="select"
                 placeholderText="Date"
                 className="date-picker"
                 prevMonthButtonLabel=""
                 navPrev={null}
                 navNext={null}
-                // onDayMouseDown={(e, date) => handleMouseDown(date)}
-                // onDayMouseEnter={(e, date) => handleMouseMove(date)}
               />
             </div>
           </div>
@@ -138,7 +115,9 @@ function TaskNav() {
               className="search mx-3 p-2"
               placeholder="Search"
             ></input>
-            <Button className=" p-3 add-task">Add Task</Button>
+            <Button onClick={handleShow} className=" p-3 add-task">
+              Add Task
+            </Button>
           </div>
         </Col>
       </Row>

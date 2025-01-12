@@ -7,12 +7,16 @@ import TaskNav from "./Components/TaskList/TaskNav";
 import TaskListView from "./Components/TaskList/TaskListView";
 import { AuthProvider } from "./Components/AuthContext/AuthContext.tsx";
 import TaskBoardView from "./Components/TaskList/TaskBoardView.js";
+import { TaskProvider } from "./Components/TaskContext/TaskContext.tsx";
+import CreateTask from "./Components/TaskList/CreateTask.js";
 
 function App() {
   return (
     <Router>
       <AuthProvider>
-        <AppContent />
+        <TaskProvider>
+          <AppContent />
+        </TaskProvider>
       </AuthProvider>
     </Router>
   );
@@ -28,7 +32,9 @@ function AppContent() {
         <Route path="/login" element={<Login />} />
         <Route path="/list-view" element={<TaskListView />} />
         <Route path="/board-view" element={<TaskBoardView />} />
+        <Route path="/popup" element={<CreateTask />}></Route>
       </Routes>
+      <CreateTask />
     </div>
   );
 }

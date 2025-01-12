@@ -1,0 +1,104 @@
+.Category_btn {
+  background-color: transparent;
+  padding: 10px;
+  border-radius: 20px;
+  text-align: center;
+  font-weight: 400;
+  width: 100px;
+}
+.Category {
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 25px;
+  width: 150px;
+  padding: 10px;
+  option {
+    margin-top: 10px;
+    border-radius: 10px;
+    margin-right: 10px;
+  }
+}
+.date-picker-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 10px;
+}
+.date-picker {
+  text-align: center;
+  width: 100%;
+  padding: 10px;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 25px;
+}
+.react-datepicker__day-names {
+  display: flex;
+  background-color: #f8f9fa;
+  border-radius: 10px 10px 0 0;
+  padding: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  gap: 10px;
+}
+.react-datepicker__month {
+  display: flex;
+  gap: 25px;
+  background-color: #f8f9fa;
+  border-radius: 0 0 10px 10px;
+  padding: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+.react-datepicker__navigation {
+  display: none;
+}
+.react-datepicker__current-month {
+  display: none;
+}
+.react-datepicker__header__dropdown {
+  display: flex;
+  justify-content: center;
+  .react-datepicker__month-dropdown-container {
+    border: none;
+  }
+}
+.react-datepicker__month-select {
+  border: none;
+  margin-right: 10px;
+  background-color: white;
+}
+.react-datepicker__year-select {
+  background-color: white;
+  border: none;
+}
+.react-datepicker__month:hover {
+  cursor: pointer;
+}
+.react-datepicker__day--selected {
+  padding: 10px;
+
+  background-color: #007bff !important;
+  color: white !important;
+}
+
+.react-datepicker__day--selected:hover {
+  background-color: #0056b3 !important;
+}
+
+.filter-container {
+  display: flex;
+  align-items: baseline;
+  margin-top: 10px;
+}
+
+.date-picker {
+  width: 150px;
+  //   padding: 10px;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 25px;
+}
+
+.custom-select option {
+  background-color: #ffffff;
+  color: #495057;
+  //   padding: 10px;
+  border-radius: 30px;
+  margin-top: 10px;
+}
