@@ -9,3 +9,22 @@
 .accordion-item:nth-child(3) .accordion-button {
   background-color: rgba(206, 255, 204, 1) !important;
 }
+
+.deleteOption {
+  border-radius: 25px;
+  background-color: white;
+  width: 25%;
+  padding: "10px";
+  position: absolute;
+  top: 32%;
+  left: 73%;
+  z-index: 99;
+}
+
+.delete {
+  cursor: pointer;
+}
+
+.accordion-body {
+  background-color: rgba(241, 241, 241, 1);
+}

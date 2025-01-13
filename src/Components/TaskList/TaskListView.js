@@ -1,13 +1,32 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Col, Container, Row } from "react-bootstrap";
 import Accordion from "react-bootstrap/Accordion";
 import "../TaskList/Sass/TaskListView.scss";
 import { supabase } from "../Supabase/Supabase.js";
 import { useAuth } from "../AuthContext/AuthContext.tsx";
+import { IoIosMore } from "react-icons/io";
+import { RiDeleteBin5Fill } from "react-icons/ri";
+import { RiEdit2Fill } from "react-icons/ri";
 
 function TaskListView() {
-  const { currentUser } = useAuth();
-  const [tasks, setTasks] = useState([]);
+  const { currentUser } = useAuth(),
+    [tasks, setTasks] = useState([]),
+    // [deleteAndEdit, setDeleteAndEdit] = useState(false),
+    [activeTaskId, setActiveTaskId] = useState(null), // Store the active task ID
+    [showOptions, setShowOptions] = useState(false),
+    handleDeleteAndEdit = useCallback(
+      (taskId) => {
+        setActiveTaskId(taskId === activeTaskId ? null : taskId);
+        setShowOptions(true);
+      },
+      [activeTaskId]
+    ),
+    handleMouseLeave = () => {
+      setShowOptions(false);
+    },
+    handleDelete = async (taskID) => {
+      const response = await supabase.from("todo").delete().eq("id", taskID);
+    };
 
   useEffect(() => {
     const fetchTasks = async () => {
@@ -28,7 +47,7 @@ function TaskListView() {
     };
 
     fetchTasks();
-  }, [currentUser]);
+  }, [currentUser, setTasks, tasks]);
 
   console.log(tasks, "tasks");
 
@@ -37,11 +56,47 @@ function TaskListView() {
     return tasks
       .filter((task) => task.status === status)
       .map((task) => (
-        <div key={task.id} className="d-flex justify-content-between">
-          <h5>{task.title}</h5>
-          <p>{task.category}</p>
-          <p>{task.created_at}</p>
-        </div>
+        <Row key={task.id}>
+          <Col lg="3">
+            {" "}
+            <h5>{task.title}</h5>
+          </Col>
+          <Col lg="3">
+            <p>{task.category}</p>
+          </Col>
+          <Col lg="3">
+            <p>{task.created_at}</p>
+          </Col>
+          <Col lg="3" className="position-relative d-flex justify-content-end">
+            <div
+              onMouseEnter={() => handleDeleteAndEdit(task.id)}
+              onMouseLeave={handleMouseLeave}
+            >
+              <IoIosMore />
+              {activeTaskId === task.id && showOptions && (
+                <div
+                  className="deleteOption p-3 position-absolute"
+                  //   onClick={() => handleEdit(task.id)}
+                >
+                  <div className="d-flex align-items-center">
+                    <RiEdit2Fill className="mx-2" /> Edit
+                  </div>
+                  <div
+                    className="d-flex align-items-center mt-2  delete"
+                    style={{ color: "red" }}
+                    onClick={() => handleDelete(task.id)}
+                  >
+                    <RiDeleteBin5Fill
+                      style={{ color: "red" }}
+                      className="mx-2"
+                    />{" "}
+                    Delete
+                  </div>
+                </div>
+              )}
+            </div>
+          </Col>
+        </Row>
       ));
   };
   return (
