@@ -1,4 +1,4 @@
-.accordion-item:nth-child(1) .accordion-button {
+.todo-accordion-item > .accordion-header-todo button {
   background-color: rgba(250, 195, 255, 1) !important;
 }
 
@@ -13,11 +13,10 @@
 .deleteOption {
   border-radius: 25px;
   background-color: white;
-  width: 25%;
   padding: "10px";
   position: absolute;
   top: 32%;
-  left: 73%;
+  left: 60%;
   z-index: 99;
 }
 
@@ -27,4 +26,36 @@
 
 .accordion-body {
   background-color: rgba(241, 241, 241, 1);
+  .accordion-add {
+    font-weight: bold;
+    text-align: center;
+    border-radius: 30px;
+    background: rgba(123, 25, 132, 1);
+    border: rgba(123, 25, 132, 1);
+    width: 125px;
+  }
+  .accordion-cancel {
+    font-weight: bold;
+    width: 125px;
+
+    text-align: center;
+    color: rgba(0, 0, 0, 1);
+    border-radius: 30px;
+    background: rgba(244, 244, 244, 1);
+    border: rgba(244, 244, 244, 1);
+  }
+}
+
+.accordion-button {
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+.accordion {
+  border: none;
+}
+.accordion-input {
+  border: none;
+  background-color: transparent;
+  color: rgba(0, 0, 0, 0.5);
 }

@@ -25,32 +25,7 @@ function CreateTask() {
       taskData,
     } = useContext(TaskContext),
     { currentUser } = useAuth();
-  const [dragActive, setDragActive] = useState(false);
 
-  const handleDrag = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (e.type === "dragenter" || e.type === "dragover") {
-      setDragActive(true);
-    } else if (e.type === "dragleave") {
-      setDragActive(false);
-    }
-  };
-
-  const handleDrop = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setDragActive(false);
-    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      handleChange(e.dataTransfer.files[0]);
-    }
-  };
-
-  const handleFileChange = (e) => {
-    if (e.target.files && e.target.files[0]) {
-      handleChange(e.target.files[0]);
-    }
-  };
   const handleClose = async () => {
       const newTask = {
         title: title,

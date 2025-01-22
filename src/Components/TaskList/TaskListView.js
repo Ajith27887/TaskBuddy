@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { Col, Container, Row } from "react-bootstrap";
+import { Col, Container, Row, Button } from "react-bootstrap";
 import Accordion from "react-bootstrap/Accordion";
 import "../TaskList/Sass/TaskListView.scss";
 import { supabase } from "../Supabase/Supabase.js";
@@ -7,9 +7,10 @@ import { useAuth } from "../AuthContext/AuthContext.tsx";
 import { IoIosMore } from "react-icons/io";
 import { RiDeleteBin5Fill } from "react-icons/ri";
 import { RiEdit2Fill } from "react-icons/ri";
-// import { Draggable } from "react-drag-reorder";
 import { MdOutlineDragIndicator } from "react-icons/md";
 import { IoIosCheckmarkCircle } from "react-icons/io";
+import { FiPlus } from "react-icons/fi";
+import { AiOutlineEnter } from "react-icons/ai";
 
 function TaskListView() {
   const { currentUser } = useAuth(),
@@ -136,11 +137,47 @@ function TaskListView() {
       <Row>
         <Col lg="12">
           <Accordion defaultActiveKey="0">
-            <Accordion.Item eventKey="0">
+            <Accordion.Item eventKey="0" className="todo-accordion-item">
               <Accordion.Header className="accordion-header-todo">
                 Todo
               </Accordion.Header>
-              <Accordion.Body>{renderTasks("Todo")}</Accordion.Body>
+              <Accordion.Body>
+                <Accordion>
+                  <Accordion.Item eventKey="0" className="task-accordion">
+                    <Accordion.Header className="task-accordion-header">
+                      <FiPlus
+                        style={{ color: "rgba(123, 25, 132, 1)" }}
+                        className="mx-2"
+                      />{" "}
+                      Add Task
+                    </Accordion.Header>
+                    <Accordion.Body>
+                      <Container fluid>
+                        <Row>
+                          <Col lg="5">
+                            <input
+                              type="text"
+                              placeholder="Task Title"
+                              className="accordion-input p-2 w-100"
+                            ></input>
+                            <div className="d-flex mx-2">
+                              <Button className="accordion-add mt-3">
+                                ADD <AiOutlineEnter className="mx-2" />
+                              </Button>
+                              <Button className="accordion-cancel p-3 mx-2 mt-3">
+                                Cancel
+                              </Button>
+                            </div>
+                          </Col>
+                          <Col lg="7"></Col>
+                        </Row>
+                      </Container>
+                    </Accordion.Body>
+                  </Accordion.Item>
+                </Accordion>
+
+                {renderTasks("Todo")}
+              </Accordion.Body>
             </Accordion.Item>
             <Accordion.Item eventKey="1" className="mt-5">
               <Accordion.Header className="accordion-header-in-progress">
