@@ -52,127 +52,82 @@ function TaskListView() {
     fetchTasks();
   }, [currentUser, setTasks, tasks]);
 
-  console.log(tasks, "tasks");
-
-  //   const renderTasks = (status) => {
-  //     console.log(status, "todo");
-  //     return tasks
-  //       .filter((task) => task.status === status)
-  //       .map((task) => (
-  //         <Row key={task.id}>
-  //           <Col lg="3" className="d-flex">
-  //             <MdOutlineDragIndicator
-  //               className="mx-2"
-  //               style={{ width: "32px" }}
-  //             />
-  //             <h5>{task.title}</h5>
-  //           </Col>
-  //           <Col lg="3">
-  //             <p>{task.category}</p>
-  //           </Col>
-  //           <Col lg="3">
-  //             <p>{task.created_at}</p>
-  //           </Col>
-  //           <Col lg="3" className="position-relative d-flex justify-content-end">
-  //             <div
-  //               onMouseEnter={() => handleDeleteAndEdit(task.id)}
-  //               onMouseLeave={handleMouseLeave}
-  //             >
-  //               <IoIosMore />
-  //               {activeTaskId === task.id && showOptions && (
-  //                 <div
-  //                   className="deleteOption p-3 position-absolute"
-  //                   //   onClick={() => handleEdit(task.id)}
-  //                 >
-  //                   <div className="d-flex align-items-center">
-  //                     <RiEdit2Fill className="mx-2" /> Edit
-  //                   </div>
-  //                   <div
-  //                     className="d-flex align-items-center mt-2  delete"
-  //                     style={{ color: "red" }}
-  //                     onClick={() => handleDelete(task.id)}
-  //                   >
-  //                     <RiDeleteBin5Fill
-  //                       style={{ color: "red" }}
-  //                       className="mx-2"
-  //                     />{" "}
-  //                     Delete
-  //                   </div>
-  //                 </div>
-  //               )}
-  //             </div>
-  //           </Col>
-  //         </Row>
-  //       ));
-  //   };
-
   const renderTasks = (status) => {
     const filteredTasks = tasks.filter((task) => task.status === status);
 
     return (
-      //   <Draggable>
-      filteredTasks.map((task, index) => (
-        <Row key={task.id} data-id={task.id}>
-          <Col
-            lg="3"
-            className="d-flex align-items-baseline"
-            style={{ color: "rgba(0, 0, 0, 0.6)" }}
-          >
-            <input type="checkbox"></input>
-            <MdOutlineDragIndicator
-              className="mx-2"
-              style={{ width: "32px" }}
-            />
-            <IoIosCheckmarkCircle
-              className="mx-2"
-              style={{
-                color:
-                  task.status !== "Completed"
-                    ? "rgba(221, 218, 221, 1)"
-                    : "rgba(27, 141, 23, 1)",
-                fontSize: "20px",
-              }}
-            />
-            <p style={{ color: "rgba(0, 0, 0, 0.6)" }}>{task.title}</p>
-          </Col>
-          <Col lg="2">
-            <p style={{ color: "rgba(0, 0, 0, 0.6)" }}>{task.category}</p>
-          </Col>
-          <Col lg="2">
-            <p style={{ color: "rgba(0, 0, 0, 0.6)" }}>{task.status}</p>
-          </Col>
-          <Col lg="2">
-            <p style={{ color: "rgba(0, 0, 0, 0.6)" }}>{task.created_at}</p>
-          </Col>
-          <Col lg="3" className="position-relative d-flex justify-content-end">
-            <div
-              onMouseEnter={() => handleDeleteAndEdit(task.id)}
-              onMouseLeave={handleMouseLeave}
+      <>
+        {filteredTasks.map((task, index) => (
+          <Row key={task.id} data-id={task.id}>
+            <Col
+              lg="3"
+              className="d-flex align-items-baseline"
+              style={{ color: "rgba(0, 0, 0, 0.6)" }}
             >
-              <IoIosMore />
-              {activeTaskId === task.id && showOptions && (
-                <div className="deleteOption p-3 position-absolute">
-                  <div className="d-flex align-items-center">
-                    <RiEdit2Fill className="mx-2" /> Edit
-                  </div>
-                  <div
-                    className="d-flex align-items-center mt-2 delete"
-                    style={{ color: "red" }}
-                    onClick={() => handleDelete(task.id)}
-                  >
-                    <RiDeleteBin5Fill
+              <input type="checkbox"></input>
+              <MdOutlineDragIndicator
+                className="mx-2"
+                style={{ width: "32px" }}
+              />
+              <IoIosCheckmarkCircle
+                className="mx-2"
+                style={{
+                  color:
+                    task.status !== "Completed"
+                      ? "rgba(221, 218, 221, 1)"
+                      : "rgba(27, 141, 23, 1)",
+                  fontSize: "20px",
+                }}
+              />
+              <p style={{ color: "rgba(0, 0, 0, 0.6)" }}>{task.title}</p>
+            </Col>
+            <Col lg="2">
+              <p style={{ color: "rgba(0, 0, 0, 0.6)" }}>{task.category}</p>
+            </Col>
+            <Col lg="2">
+              <p style={{ color: "rgba(0, 0, 0, 0.6)" }}>{task.status}</p>
+            </Col>
+            <Col lg="3" className="text-center">
+              <p style={{ color: "rgba(0, 0, 0, 0.6)" }}>
+                {new Date(task.created_at).toDateString("en-us", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                })}
+              </p>
+            </Col>
+            <Col
+              lg="2"
+              className="position-relative d-flex justify-content-end"
+            >
+              <div
+                onMouseEnter={() => handleDeleteAndEdit(task.id)}
+                onMouseLeave={handleMouseLeave}
+              >
+                <IoIosMore />
+                {activeTaskId === task.id && showOptions && (
+                  <div className="deleteOption p-3 position-absolute">
+                    <div className="d-flex align-items-center">
+                      <RiEdit2Fill className="mx-2" /> Edit
+                    </div>
+                    <div
+                      className="d-flex align-items-center mt-2 delete"
                       style={{ color: "red" }}
-                      className="mx-2"
-                    />{" "}
-                    Delete
+                      onClick={() => handleDelete(task.id)}
+                    >
+                      <RiDeleteBin5Fill
+                        style={{ color: "red" }}
+                        className="mx-2"
+                      />{" "}
+                      Delete
+                    </div>
                   </div>
-                </div>
-              )}
-            </div>
-          </Col>
-        </Row>
-      ))
-      //   </Draggable>
+                )}
+              </div>
+            </Col>
+          </Row>
+        ))}
+      </>
     );
   };
 

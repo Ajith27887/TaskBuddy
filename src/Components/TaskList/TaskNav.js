@@ -15,7 +15,7 @@ import { TaskContext } from "../TaskContext/TaskContext.tsx";
 
 function TaskNav() {
   const navigate = useNavigate(),
-    [setSelectedDate] = useState(new Date()),
+    [selectedDate, setSelectedDate] = useState(""),
     { currentUser } = useAuth(),
     { setShow } = useContext(TaskContext);
 
@@ -73,7 +73,7 @@ function TaskNav() {
               <option value="Work">Work</option>
               <option value="Work">Personal</option>
             </select>
-            <div className="date-picker-container">
+            <div className="date-picker-container" style={{ zIndex: "99" }}>
               <DatePicker
                 // selected={selectedDate}
                 onChange={(date) => setSelectedDate(date)}
@@ -109,7 +109,7 @@ function TaskNav() {
             <BiLogOut className="mx-2" style={{ fontSize: "24px" }} />
             Logout
           </Button>
-          <div className="d-flex justify-content-start mt-3">
+          <div className="d-flex justify-content-start align-items-baseline mt-3">
             <input
               type="search"
               className="search mx-3 p-2"
