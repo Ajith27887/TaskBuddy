@@ -1,4 +1,6 @@
 import React, { createContext, useState, ReactNode } from "react";
+import { useAuth } from "../AuthContext/AuthContext.tsx";
+import { supabase } from "../Supabase/Supabase";
 
 // Define the types for the context value
 interface TaskContextType {
@@ -17,6 +19,8 @@ interface TaskContextType {
   setTaskData: (taskData: object) => void;
   taskData: object;
   handleChange: (file: File) => void;
+  fetchTasks: () => Promise<void>;
+  allTasks: any[];
 }
 
 // Create the context with a default value
@@ -37,6 +41,8 @@ const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
   const [title, setTitle] = useState<string>("");
   const [taskData, setTaskData] = useState<object>({});
   const [file, setFile] = useState<File | null>(null);
+  const { currentUser } = useAuth();
+  const [allTasks, setAllTasks] = useState<any[]>([]);
   //   const []
   const handleChange = (file: File) => {
     setFile(file);
@@ -46,11 +52,29 @@ const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
     setTasks((prevTasks) => [...prevTasks, task]);
   };
 
+  const fetchTasks = async () => {
+    try {
+      const { data, error } = await supabase
+        .from("todo")
+        .select("*")
+        .eq("user_id", currentUser.email);
+
+      if (error) {
+        console.error("Error fetching tasks:", error);
+      } else {
+        setAllTasks(data);
+      }
+    } catch (err) {
+      console.error("Unexpected error:", err);
+    }
+  };
+
   return (
     <TaskContext.Provider
       value={{
         tasks,
         addTask,
+        allTasks,
         setShow,
         show,
         setCategory,
@@ -64,6 +88,7 @@ const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
         setTaskData,
         handleChange,
         taskData,
+        fetchTasks,
       }}
     >
       {children}

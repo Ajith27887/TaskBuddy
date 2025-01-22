@@ -1,5 +1,11 @@
-import React, { useState, useEffect, useCallback } from "react";
-import { Col, Container, Row, Button } from "react-bootstrap";
+import React, {
+  useState,
+  useEffect,
+  useCallback,
+  useRef,
+  useContext,
+} from "react";
+import { Col, Container, Row, Button, Dropdown, Alert } from "react-bootstrap";
 import Accordion from "react-bootstrap/Accordion";
 import "../TaskList/Sass/TaskListView.scss";
 import { supabase } from "../Supabase/Supabase.js";
@@ -11,13 +17,30 @@ import { MdOutlineDragIndicator } from "react-icons/md";
 import { IoIosCheckmarkCircle } from "react-icons/io";
 import { FiPlus } from "react-icons/fi";
 import { AiOutlineEnter } from "react-icons/ai";
+import { CiCirclePlus } from "react-icons/ci";
+import { TaskContext } from "../TaskContext/TaskContext.tsx";
 
 function TaskListView() {
   const { currentUser } = useAuth(),
+    dateInputRef = useRef(null),
+    {
+      setTitle,
+      allTasks,
+      fetchTasks,
+      setTaskStatus,
+      taskStatus,
+      category,
+      title,
+      setCategory,
+      setSelectedDate,
+      selectedDate,
+    } = useContext(TaskContext),
     [tasks, setTasks] = useState([]),
     // [deleteAndEdit, setDeleteAndEdit] = useState(false),
     [activeTaskId, setActiveTaskId] = useState(null), // Store the active task ID
     [showOptions, setShowOptions] = useState(false),
+    d = new Date(),
+    currentDate = d.getDate(),
     handleDeleteAndEdit = useCallback(
       (taskId) => {
         setActiveTaskId(taskId === activeTaskId ? null : taskId);
@@ -30,35 +53,84 @@ function TaskListView() {
     },
     handleDelete = async (taskID) => {
       const response = await supabase.from("todo").delete().eq("id", taskID);
-    };
+      fetchTasks();
+    },
+    handleTitle = (e) => {
+      setTitle(e.target.value);
+    },
+    handleStatusChange = (eventKey) => {
+      setTaskStatus(eventKey);
+      console.log(eventKey, "status");
+    },
+    handleCategory = (eventKey) => {
+      setCategory(eventKey);
+    },
+    handleDate = (e) => {
+      setSelectedDate(e.target.value);
+    },
+    handleInLineStatus = async (taskId, eventKey) => {
+      console.log(eventKey, taskId, "taskid");
 
-  useEffect(() => {
-    const fetchTasks = async () => {
       try {
         const { data, error } = await supabase
           .from("todo")
-          .select("*")
-          .eq("user_id", currentUser.email);
-
+          .update({ status: eventKey })
+          .eq("id", taskId);
         if (error) {
-          console.error("Error fetching tasks:", error);
+          console.log("Somthing Wrong", error);
         } else {
-          setTasks(data);
+          console.log("updated", data);
+          fetchTasks();
+        }
+      } catch (err) {
+        console.error("Unexpected error");
+      }
+    },
+    handleClose = async () => {
+      const newTask = {
+        title: title,
+        date: selectedDate,
+        status: taskStatus,
+        category: category,
+        user_name: currentUser.displayName,
+        user_id: currentUser.email,
+        file: "",
+      };
+
+      try {
+        const { data, error } = await supabase.from("todo").insert([newTask]);
+        if (error) {
+          console.error("Error inserting task:", error);
+        } else {
+          <Alert variant="success">
+            <Alert.Heading>Task inserted successfully</Alert.Heading>
+          </Alert>;
+          console.log("Task inserted successfully:", data);
+          fetchTasks();
         }
       } catch (err) {
         console.error("Unexpected error:", err);
       }
+      setTitle("");
+      setSelectedDate(new Date());
+      setTaskStatus("");
+      setCategory("");
+      // setShow(false);
     };
 
+  useEffect(() => {
     fetchTasks();
-  }, [currentUser, setTasks, tasks]);
+  }, [currentUser, setTasks]);
 
   const renderTasks = (status) => {
-    const filteredTasks = tasks.filter((task) => task.status === status);
+    const filteredTasks = allTasks.filter((task) => task.status === status);
+    const sortedTasks = filteredTasks.sort(
+      (a, b) => new Date(a.date) - new Date(b.date)
+    );
 
     return (
       <>
-        {filteredTasks.map((task, index) => (
+        {sortedTasks.map((task, index) => (
           <Row key={task.id} data-id={task.id}>
             <Col
               lg="3"
@@ -86,15 +158,29 @@ function TaskListView() {
               <p style={{ color: "rgba(0, 0, 0, 0.6)" }}>{task.category}</p>
             </Col>
             <Col lg="2">
-              <p style={{ color: "rgba(0, 0, 0, 0.6)" }}>{task.status}</p>
+              <Dropdown
+                onSelect={(eventKey) => handleInLineStatus(task.id, eventKey)}
+              >
+                <Dropdown.Toggle>{task.status}</Dropdown.Toggle>
+                <Dropdown.Menu>
+                  <Dropdown.Item eventKey="Todo">TODO</Dropdown.Item>
+                  <Dropdown.Item eventKey="in-progress">
+                    In-progress
+                  </Dropdown.Item>
+                  <Dropdown.Item eventKey="Completed">Completed</Dropdown.Item>
+                </Dropdown.Menu>
+              </Dropdown>
+              {/* <p style={{ color: "rgba(0, 0, 0, 0.6)" }}>{task.status}</p> */}
             </Col>
             <Col lg="3" className="text-center">
               <p style={{ color: "rgba(0, 0, 0, 0.6)" }}>
-                {new Date(task.created_at).toDateString("en-us", {
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric",
-                })}
+                {task.date === currentDate
+                  ? "Today"
+                  : new Date(task.date).toDateString("en-us", {
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                    })}
               </p>
             </Col>
             <Col
@@ -142,7 +228,7 @@ function TaskListView() {
                 Todo
               </Accordion.Header>
               <Accordion.Body>
-                <Accordion>
+                <Accordion className="mb-3">
                   <Accordion.Item eventKey="0" className="task-accordion">
                     <Accordion.Header className="task-accordion-header">
                       <FiPlus
@@ -154,14 +240,19 @@ function TaskListView() {
                     <Accordion.Body>
                       <Container fluid>
                         <Row>
-                          <Col lg="5">
+                          <Col lg="4">
                             <input
                               type="text"
+                              value={title}
+                              onChange={handleTitle}
                               placeholder="Task Title"
                               className="accordion-input p-2 w-100"
                             ></input>
                             <div className="d-flex mx-2">
-                              <Button className="accordion-add mt-3">
+                              <Button
+                                className="accordion-add mt-3"
+                                onClick={handleClose}
+                              >
                                 ADD <AiOutlineEnter className="mx-2" />
                               </Button>
                               <Button className="accordion-cancel p-3 mx-2 mt-3">
@@ -169,7 +260,66 @@ function TaskListView() {
                               </Button>
                             </div>
                           </Col>
-                          <Col lg="7"></Col>
+                          <Col
+                            className="d-flex justify-content-center align-items-start"
+                            lg="2"
+                          >
+                            <form>
+                              <input
+                                type="date"
+                                name="birthday"
+                                onChange={handleDate}
+                                // value={selectedDate}
+                                placeholder="ADD Date"
+                                className="accordion-date"
+                              />
+                            </form>
+                          </Col>
+                          <Col
+                            className="d-flex justify-content-center align-items-start"
+                            lg="3"
+                          >
+                            <Dropdown
+                              className="accordion-dropdown"
+                              onSelect={handleStatusChange}
+                            >
+                              <Dropdown.Toggle className="accordion-toggle">
+                                <CiCirclePlus className="large-icon" />{" "}
+                              </Dropdown.Toggle>
+                              <Dropdown.Menu>
+                                <Dropdown.Item eventKey="Todo">
+                                  Todo
+                                </Dropdown.Item>
+                                <Dropdown.Item eventKey="in-progress">
+                                  In Progress
+                                </Dropdown.Item>
+                                <Dropdown.Item eventKey="Completed">
+                                  Completed
+                                </Dropdown.Item>
+                              </Dropdown.Menu>
+                            </Dropdown>
+                          </Col>
+                          <Col
+                            lg="3"
+                            className="d-flex justify-content-center align-items-start"
+                          >
+                            <Dropdown
+                              className="accordion-dropdown"
+                              onSelect={handleCategory}
+                            >
+                              <Dropdown.Toggle className="accordion-toggle">
+                                <CiCirclePlus className="large-icon" />{" "}
+                              </Dropdown.Toggle>
+                              <Dropdown.Menu>
+                                <Dropdown.Item eventKey="work">
+                                  Work
+                                </Dropdown.Item>
+                                <Dropdown.Item eventKey="personal">
+                                  Personal
+                                </Dropdown.Item>
+                              </Dropdown.Menu>
+                            </Dropdown>
+                          </Col>
                         </Row>
                       </Container>
                     </Accordion.Body>

@@ -20,6 +20,7 @@ function CreateTask() {
       setTaskStatus,
       setTitle,
       handleChange,
+      fetchTasks,
       taskStatus,
       title,
       taskData,
@@ -29,13 +30,13 @@ function CreateTask() {
   const handleClose = async () => {
       const newTask = {
         title: title,
-        // Date: selectedDate,
+        date: selectedDate,
         status: taskStatus,
         category: category,
         user_name: currentUser.displayName,
         user_id: currentUser.email,
+        file: "",
       };
-      // Upload task data to Supabase
       try {
         const { data, error } = await supabase.from("todo").insert([newTask]);
 
@@ -43,6 +44,8 @@ function CreateTask() {
           console.error("Error inserting task:", error);
         } else {
           console.log("Task inserted successfully:", data);
+          fetchTasks();
+          // Fetch tasks after inserting a new task
         }
       } catch (err) {
         console.error("Unexpected error:", err);

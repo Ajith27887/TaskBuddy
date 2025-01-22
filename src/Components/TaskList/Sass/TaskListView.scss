@@ -11,7 +11,7 @@
 }
 
 .deleteOption {
-  border-radius: 25px;
+  border-radius: 10px; // Ensure this is set to 10px
   background-color: white;
   padding: "10px";
   position: absolute;
@@ -43,6 +43,22 @@
     border-radius: 30px;
     background: rgba(244, 244, 244, 1);
     border: rgba(244, 244, 244, 1);
+  }
+  .accordion-date {
+    padding: 10px;
+    background-color: transparent;
+    border: 1px solid black;
+    border-radius: 25px;
+  }
+  .large-icon {
+    font-size: 3rem;
+  }
+  .accordion-dropdown {
+    .accordion-toggle {
+      color: black;
+      border: none;
+      background-color: transparent !important;
+    }
   }
 }
 
