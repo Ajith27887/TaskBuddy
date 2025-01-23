@@ -21,6 +21,10 @@ interface TaskContextType {
   handleChange: (file: File) => void;
   fetchTasks: () => Promise<void>;
   allTasks: any[];
+  navFilterStatus: string;
+  sethandleNavFilterStatus: (navFilterStatus: string) => void;
+  navFilterDate: string;
+  setNavFilterDate: (navFilterDate: string) => void;
 }
 
 // Create the context with a default value
@@ -43,10 +47,14 @@ const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
   const [file, setFile] = useState<File | null>(null);
   const { currentUser } = useAuth();
   const [allTasks, setAllTasks] = useState<any[]>([]);
+  const [navFilterStatus, sethandleNavFilterStatus] = useState<string>("");
+  const [navFilterDate, setNavFilterDate] = useState<string>("");
   //   const []
   const handleChange = (file: File) => {
     setFile(file);
   };
+
+  console.log(allTasks, "alltask");
 
   const addTask = (task: string) => {
     setTasks((prevTasks) => [...prevTasks, task]);
@@ -78,8 +86,12 @@ const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
         setShow,
         show,
         setCategory,
+        setNavFilterDate,
         setSelectedDate,
+        navFilterDate,
         selectedDate,
+        sethandleNavFilterStatus,
+        navFilterStatus,
         category,
         setTaskStatus,
         taskStatus,

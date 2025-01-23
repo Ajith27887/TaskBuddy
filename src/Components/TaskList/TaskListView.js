@@ -27,6 +27,8 @@ function TaskListView() {
       setTitle,
       allTasks,
       fetchTasks,
+      navFilterStatus,
+      navFilterDate,
       setTaskStatus,
       taskStatus,
       category,
@@ -127,10 +129,31 @@ function TaskListView() {
     const sortedTasks = filteredTasks.sort(
       (a, b) => new Date(a.date) - new Date(b.date)
     );
+    // const workCategory = sortedTasks.filter(
+    //   (task) => task.category === navFilterStatus
+    // );
+    const workCategory = navFilterStatus
+      ? sortedTasks.filter((task) => task.category === navFilterStatus)
+      : sortedTasks;
+
+    // const tasksWithFormattedDate = workCategory.map((task) => ({
+    //   ...task,
+    //   formattedDate: new Date(task.date).toLocaleDateString("en-us", {
+    //     year: "numeric",
+    //     month: "long",
+    //     day: "numeric",
+    //   }),
+    // }));
+
+    // const DateCategory = navFilterDate
+    //   ? tasksWithFormattedDate.filter(
+    //       (task) => task.formattedDate === navFilterDate
+    //     )
+    //   : tasksWithFormattedDate;
 
     return (
       <>
-        {sortedTasks.map((task, index) => (
+        {workCategory.map((task, index) => (
           <Row key={task.id} data-id={task.id}>
             <Col
               lg="3"

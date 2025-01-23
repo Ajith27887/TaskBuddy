@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useContext } from "react";
+import React, { useState, useCallback, useContext, useEffect } from "react";
 import { Button, Container, Col, Row } from "react-bootstrap";
 import { auth } from "../FireBase/Firebase";
 import { useNavigate } from "react-router";
@@ -17,7 +17,22 @@ function TaskNav() {
   const navigate = useNavigate(),
     [selectedDate, setSelectedDate] = useState(""),
     { currentUser } = useAuth(),
-    { setShow } = useContext(TaskContext);
+    {
+      setShow,
+      sethandleNavFilterStatus,
+      setNavFilterDate,
+      navFilterStatus,
+      allTasks,
+    } = useContext(TaskContext),
+    handleNavFilterStatus = (event) => {
+      const selectedValue = event.target.value;
+      sethandleNavFilterStatus(selectedValue);
+      console.log("Selected value:", selectedValue);
+    },
+    handleClearFilter = () => {
+      sethandleNavFilterStatus("");
+      setNavFilterDate("");
+    };
 
   const handleShow = useCallback(
     (e) => {
@@ -27,6 +42,15 @@ function TaskNav() {
     },
     [setShow]
   );
+
+  const handleDate = (e) => {
+    const dates = new Date(e.target.value).toDateString("en-us", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+    setNavFilterDate(dates);
+  };
 
   const logout = useCallback(() => {
     auth.signOut();
@@ -66,28 +90,32 @@ function TaskNav() {
           </div>
           <div className="mt-2 mx-2 d-flex filter-container">
             <p className="filter">Filter by:</p>
-            <select defaultValue="" className="mx-3 Category">
+            <select
+              defaultValue=""
+              onChange={handleNavFilterStatus}
+              className="mx-3 Category"
+            >
               <option value="" disabled selected hidden>
                 Category
               </option>
-              <option value="Work">Work</option>
-              <option value="Work">Personal</option>
+              <option value="work">Work</option>
+              <option value="personal">Personal</option>
             </select>
             <div className="date-picker-container" style={{ zIndex: "99" }}>
-              <DatePicker
-                // selected={selectedDate}
-                onChange={(date) => setSelectedDate(date)}
-                dateFormat="dd/MM/yyyy"
-                showMonthDropdown
-                showYearDropdown
-                dropdownMode="select"
-                placeholderText="Date"
-                className="date-picker"
-                prevMonthButtonLabel=""
-                navPrev={null}
-                navNext={null}
-              />
+              <form>
+                <input
+                  type="date"
+                  name="birthday"
+                  onChange={handleDate}
+                  value={selectedDate}
+                  placeholder="ADD Date"
+                  className="accordion-date"
+                />
+              </form>
             </div>
+            <Button className="mx-2" onClick={handleClearFilter}>
+              Clear
+            </Button>
           </div>
         </Col>
         <Col
