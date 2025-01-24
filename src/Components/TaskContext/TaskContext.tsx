@@ -25,6 +25,8 @@ interface TaskContextType {
   sethandleNavFilterStatus: (navFilterStatus: string) => void;
   navFilterDate: string;
   setNavFilterDate: (navFilterDate: string) => void;
+  searchQuery: string;
+  setSearchQuery: (searchQuery: string) => void;
 }
 
 // Create the context with a default value
@@ -49,7 +51,8 @@ const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
   const [allTasks, setAllTasks] = useState<any[]>([]);
   const [navFilterStatus, sethandleNavFilterStatus] = useState<string>("");
   const [navFilterDate, setNavFilterDate] = useState<string>("");
-  //   const []
+  const [searchQuery, setSearchQuery] = useState<string>("");
+
   const handleChange = (file: File) => {
     setFile(file);
   };
@@ -80,6 +83,8 @@ const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
   return (
     <TaskContext.Provider
       value={{
+        setSearchQuery,
+        searchQuery,
         tasks,
         addTask,
         allTasks,

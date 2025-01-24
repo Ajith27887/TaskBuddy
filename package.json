@@ -10,6 +10,7 @@
     "date-fns": "^4.1.0",
     "firebase": "^11.1.0",
     "react": "^19.0.0",
+    "react-beautiful-dnd": "^13.1.1",
     "react-bootstrap": "^2.10.7",
     "react-date-picker": "^11.0.0",
     "react-datepicker": "^7.6.0",

@@ -19,6 +19,7 @@ import { FiPlus } from "react-icons/fi";
 import { AiOutlineEnter } from "react-icons/ai";
 import { CiCirclePlus } from "react-icons/ci";
 import { TaskContext } from "../TaskContext/TaskContext.tsx";
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 
 function TaskListView() {
   const { currentUser } = useAuth(),
@@ -34,6 +35,7 @@ function TaskListView() {
       category,
       title,
       setCategory,
+      searchQuery,
       setSelectedDate,
       selectedDate,
     } = useContext(TaskContext),
@@ -41,6 +43,7 @@ function TaskListView() {
     // [deleteAndEdit, setDeleteAndEdit] = useState(false),
     [activeTaskId, setActiveTaskId] = useState(null), // Store the active task ID
     [showOptions, setShowOptions] = useState(false),
+    [navDateL, setNavDate] = useState(""),
     d = new Date(),
     currentDate = d.getDate(),
     handleDeleteAndEdit = useCallback(
@@ -129,31 +132,35 @@ function TaskListView() {
     const sortedTasks = filteredTasks.sort(
       (a, b) => new Date(a.date) - new Date(b.date)
     );
-    // const workCategory = sortedTasks.filter(
-    //   (task) => task.category === navFilterStatus
-    // );
+
     const workCategory = navFilterStatus
       ? sortedTasks.filter((task) => task.category === navFilterStatus)
       : sortedTasks;
 
-    // const tasksWithFormattedDate = workCategory.map((task) => ({
-    //   ...task,
-    //   formattedDate: new Date(task.date).toLocaleDateString("en-us", {
-    //     year: "numeric",
-    //     month: "long",
-    //     day: "numeric",
-    //   }),
-    // }));
+    const searchedTasks = searchQuery
+      ? workCategory.filter((task) =>
+          task.title.toLowerCase().includes(searchQuery.toLowerCase())
+        )
+      : workCategory;
+    // if (workCategory) {
+    //   const newdate = new Date(workCategory.map((date) => date)).toDateString(
+    //     "en-us",
+    //     {
+    //       year: "numeric",
+    //       month: "long",
+    //       day: "numeric",
+    //     }
+    //   );
+    //   setNavDate(newdate);
+    // }
 
     // const DateCategory = navFilterDate
-    //   ? tasksWithFormattedDate.filter(
-    //       (task) => task.formattedDate === navFilterDate
-    //     )
-    //   : tasksWithFormattedDate;
+    //   ? navDateL === navFilterDate
+    //   : workCategory;
 
     return (
       <>
-        {workCategory.map((task, index) => (
+        {searchedTasks.map((task, index) => (
           <Row key={task.id} data-id={task.id}>
             <Col
               lg="3"

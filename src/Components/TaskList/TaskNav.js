@@ -22,6 +22,7 @@ function TaskNav() {
       sethandleNavFilterStatus,
       setNavFilterDate,
       navFilterStatus,
+      setSearchQuery,
       allTasks,
     } = useContext(TaskContext),
     handleNavFilterStatus = (event) => {
@@ -42,6 +43,10 @@ function TaskNav() {
     },
     [setShow]
   );
+
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+  };
 
   const handleDate = (e) => {
     const dates = new Date(e.target.value).toDateString("en-us", {
@@ -142,6 +147,7 @@ function TaskNav() {
               type="search"
               className="search mx-3 p-2"
               placeholder="Search"
+              onChange={handleSearchChange}
             ></input>
             <Button onClick={handleShow} className=" p-3 add-task">
               Add Task
