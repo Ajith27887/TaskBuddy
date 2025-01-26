@@ -165,7 +165,6 @@ const DraggableTask = ({
 
 function TaskListView() {
   const { currentUser } = useAuth(),
-    dateInputRef = useRef(null),
     {
       setTitle,
       allTasks,
@@ -185,7 +184,7 @@ function TaskListView() {
     [tasks, setTasks] = useState([]),
     [activeTaskId, setActiveTaskId] = useState(null), // Store the active task ID
     [showOptions, setShowOptions] = useState(false),
-    [navDateL, setNavDate] = useState(""),
+    // [navDateL, setNavDate] = useState(""),
     [checkBox, setCheckBox] = useState([]),
     d = new Date(),
     currentDate = d.getDate(),
@@ -200,14 +199,14 @@ function TaskListView() {
       setShowOptions(false);
     },
     handleDelete = async (taskID) => {
-      const response = await supabase.from("todo").delete().eq("id", taskID);
+      await supabase.from("todo").delete().eq("id", taskID);
       fetchTasks();
     },
     handleMulitDelete = useCallback(async () => {
       await supabase.from("todo").delete().in("id", checkBox);
       setCheckBox([]);
       fetchTasks();
-    }, [checkBox]),
+    }, [checkBox, fetchTasks]),
     handleTitle = (e) => {
       setTitle(e.target.value);
     },
@@ -290,7 +289,7 @@ function TaskListView() {
 
   useEffect(() => {
     fetchTasks();
-  }, [currentUser]);
+  }, [currentUser, fetchTasks]);
 
   useEffect(() => {
     setTasks(allTasks);
