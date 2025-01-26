@@ -20,6 +20,7 @@ import { AiOutlineEnter } from "react-icons/ai";
 import { CiCirclePlus } from "react-icons/ci";
 import { TaskContext } from "../TaskContext/TaskContext.tsx";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+import { IoMdClose } from "react-icons/io";
 
 function TaskListView() {
   const { currentUser } = useAuth(),
@@ -44,6 +45,7 @@ function TaskListView() {
     [activeTaskId, setActiveTaskId] = useState(null), // Store the active task ID
     [showOptions, setShowOptions] = useState(false),
     [navDateL, setNavDate] = useState(""),
+    [checkBox, setCheckBox] = useState([]),
     d = new Date(),
     currentDate = d.getDate(),
     handleDeleteAndEdit = useCallback(
@@ -60,6 +62,11 @@ function TaskListView() {
       const response = await supabase.from("todo").delete().eq("id", taskID);
       fetchTasks();
     },
+    handleMulitDelete = useCallback(async () => {
+      await supabase.from("todo").delete().in("id", checkBox);
+      setCheckBox([]);
+      fetchTasks();
+    }, [checkBox]),
     handleTitle = (e) => {
       setTitle(e.target.value);
     },
@@ -81,6 +88,24 @@ function TaskListView() {
           .from("todo")
           .update({ status: eventKey })
           .eq("id", taskId);
+        if (error) {
+          console.log("Somthing Wrong", error);
+        } else {
+          console.log("updated", data);
+          fetchTasks();
+        }
+      } catch (err) {
+        console.error("Unexpected error");
+      }
+    },
+    handleMulitiStatus = async (eventKey) => {
+      try {
+        const { data, error } = await supabase
+          .from("todo")
+          .update({ status: eventKey })
+          .in("id", checkBox);
+        setCheckBox([]);
+
         if (error) {
           console.log("Somthing Wrong", error);
         } else {
@@ -127,6 +152,10 @@ function TaskListView() {
     fetchTasks();
   }, [currentUser, setTasks]);
 
+  const handleMulitiClose = () => {
+    setCheckBox([]);
+  };
+
   const renderTasks = (status) => {
     const filteredTasks = allTasks.filter((task) => task.status === status);
     const sortedTasks = filteredTasks.sort(
@@ -142,6 +171,7 @@ function TaskListView() {
           task.title.toLowerCase().includes(searchQuery.toLowerCase())
         )
       : workCategory;
+
     // if (workCategory) {
     //   const newdate = new Date(workCategory.map((date) => date)).toDateString(
     //     "en-us",
@@ -158,6 +188,16 @@ function TaskListView() {
     //   ? navDateL === navFilterDate
     //   : workCategory;
 
+    const handleCheckBox = (isChecked, taskid) => {
+      setCheckBox((prev) => {
+        if (isChecked) {
+          return [...prev, taskid];
+        } else {
+          return prev.filter((id) => id !== taskid);
+        }
+      });
+    };
+
     return (
       <>
         {searchedTasks.map((task, index) => (
@@ -167,7 +207,10 @@ function TaskListView() {
               className="d-flex align-items-baseline"
               style={{ color: "rgba(0, 0, 0, 0.6)" }}
             >
-              <input type="checkbox"></input>
+              <input
+                onChange={(e) => handleCheckBox(e.target.checked, task.id)}
+                type="checkbox"
+              ></input>
               <MdOutlineDragIndicator
                 className="mx-2"
                 style={{ width: "32px" }}
@@ -182,7 +225,9 @@ function TaskListView() {
                   fontSize: "20px",
                 }}
               />
-              <p style={{ color: "rgba(0, 0, 0, 0.6)" }}>{task.title}</p>
+              <p style={{ color: "rgba(0, 0, 0, 0.6)" }}>
+                <s>{task.title}</s>
+              </p>
             </Col>
             <Col lg="2">
               <p style={{ color: "rgba(0, 0, 0, 0.6)" }}>{task.category}</p>
@@ -249,7 +294,7 @@ function TaskListView() {
   };
 
   return (
-    <Container fluid className="p-5">
+    <Container fluid className="p-5 position-relative">
       <Row>
         <Col lg="12">
           <Accordion defaultActiveKey="0">
@@ -374,6 +419,26 @@ function TaskListView() {
           </Accordion>
         </Col>
       </Row>
+      {checkBox && checkBox.length > 0 ? (
+        <div className="Muliti d-flex  align-items-center">
+          <button className="w-50 mx-3" onClick={handleMulitiClose}>
+            {checkBox.length} Tasks Selected <IoMdClose />{" "}
+          </button>
+          <Dropdown onSelect={(eventKey) => handleMulitiStatus(eventKey)}>
+            <Dropdown.Toggle>Status</Dropdown.Toggle>
+            <Dropdown.Menu>
+              <Dropdown.Item eventKey="Todo">TODO</Dropdown.Item>
+              <Dropdown.Item eventKey="in-progress">In-progress</Dropdown.Item>
+              <Dropdown.Item eventKey="Completed">Completed</Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown>
+          <Button className="mx-3 w-25" onClick={handleMulitDelete}>
+            Delete
+          </Button>
+        </div>
+      ) : (
+        <></>
+      )}
     </Container>
   );
 }

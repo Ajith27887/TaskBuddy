@@ -75,3 +75,24 @@
   background-color: transparent;
   color: rgba(0, 0, 0, 0.5);
 }
+.Muliti {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  right: 50%;
+  width: 500px;
+  transform: translate(-50%, -50%);
+  border-radius: 10px;
+  height: auto;
+  padding: 10px;
+  background-color: black;
+  color: white;
+
+  button {
+    background-color: transparent;
+    border: 1px solid white;
+    border-radius: 50px;
+    color: white;
+    padding: 10px;
+  }
+}
