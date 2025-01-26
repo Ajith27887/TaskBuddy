@@ -27,6 +27,7 @@ interface TaskContextType {
   setNavFilterDate: (navFilterDate: string) => void;
   searchQuery: string;
   setSearchQuery: (searchQuery: string) => void;
+  setAllTasks: (tasks: any[]) => void;
 }
 
 // Create the context with a default value
@@ -106,6 +107,7 @@ const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
         handleChange,
         taskData,
         fetchTasks,
+        setAllTasks,
       }}
     >
       {children}

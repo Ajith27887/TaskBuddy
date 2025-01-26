@@ -58,7 +58,7 @@ function CreateTask() {
     },
     handleWork = (e) => {
       e.preventDefault();
-      setCategory("Work");
+      setCategory("work");
     },
     handlePersonal = (e) => {
       e.preventDefault();
