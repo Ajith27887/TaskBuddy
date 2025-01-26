@@ -172,21 +172,13 @@ function TaskListView() {
         )
       : workCategory;
 
-    // if (workCategory) {
-    //   const newdate = new Date(workCategory.map((date) => date)).toDateString(
-    //     "en-us",
-    //     {
-    //       year: "numeric",
-    //       month: "long",
-    //       day: "numeric",
-    //     }
-    //   );
-    //   setNavDate(newdate);
-    // }
-
-    // const DateCategory = navFilterDate
-    //   ? navDateL === navFilterDate
-    //   : workCategory;
+    const dateFilteredTasks = navFilterDate
+      ? searchedTasks.filter(
+          (task) =>
+            new Date(task.date).toDateString() ===
+            new Date(navFilterDate).toDateString()
+        )
+      : searchedTasks;
 
     const handleCheckBox = (isChecked, taskid) => {
       setCheckBox((prev) => {
@@ -200,7 +192,7 @@ function TaskListView() {
 
     return (
       <>
-        {searchedTasks.map((task, index) => (
+        {dateFilteredTasks.map((task, index) => (
           <Row key={task.id} data-id={task.id}>
             <Col
               lg="3"
@@ -226,7 +218,7 @@ function TaskListView() {
                 }}
               />
               <p style={{ color: "rgba(0, 0, 0, 0.6)" }}>
-                <s>{task.title}</s>
+                {task.status === "Completed" ? <s>{task.title}</s> : task.title}
               </p>
             </Col>
             <Col lg="2">
