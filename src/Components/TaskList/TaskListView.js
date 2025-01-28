@@ -87,17 +87,19 @@ const DraggableTask = ({
       style={{ opacity: isDragging ? 0.5 : 1 }}
     >
       <Col
-        lg="3"
-        className="d-flex align-items-baseline"
+	  xs="4"
+        md="3"
+        className="d-flex  align-items-baseline"
         style={{ color: "rgba(0, 0, 0, 0.6)" }}
       >
         <input
+			className="d-none d-md-block"
           onChange={(e) => handleCheckBox(e.target.checked, task.id)}
           type="checkbox"
         ></input>
-        <MdOutlineDragIndicator className="mx-2" style={{ width: "32px" }} />
+        <MdOutlineDragIndicator className="mx-2 d-none d-md-block" style={{ width: "32px" }} />
         <IoIosCheckmarkCircle
-          className="mx-2"
+          className="mx-2 d-none d-md-block"
           style={{
             color:
               task.status !== "Completed"
@@ -110,10 +112,10 @@ const DraggableTask = ({
           {task.status === "Completed" ? <s>{task.title}</s> : task.title}
         </p>
       </Col>
-      <Col lg="2">
+      <Col xs="4" md="2" className="d-none d-md-none">
         <p style={{ color: "rgba(0, 0, 0, 0.6)" }}>{task.category}</p>
       </Col>
-      <Col lg="2">
+      <Col xs="4" md="2">
         <Dropdown
           onSelect={(eventKey) => handleInLineStatus(task.id, eventKey)}
         >
@@ -125,7 +127,7 @@ const DraggableTask = ({
           </Dropdown.Menu>
         </Dropdown>
       </Col>
-      <Col lg="3" className="text-center">
+      <Col xs="4" md="2" className="text-center">
         <p style={{ color: "rgba(0, 0, 0, 0.6)" }}>
           {task.date === currentDate
             ? "Today"
@@ -136,7 +138,7 @@ const DraggableTask = ({
               })}
         </p>
       </Col>
-      <Col lg="2" className="position-relative d-flex justify-content-end">
+      <Col xs="4" md="2" className="position-relative d-md-flex d-none justify-content-end">
         <div
           onMouseEnter={() => handleDeleteAndEdit(task.id)}
           onMouseLeave={handleMouseLeave}
@@ -370,7 +372,7 @@ function TaskListView() {
 
   return (
     <DndProvider backend={HTML5Backend}>
-      <Container fluid className="p-5 position-relative">
+      <Container fluid className="p-md-5 p-2 position-relative">
         <Row>
           <Col lg="12">
             <Accordion defaultActiveKey="0">
@@ -379,7 +381,7 @@ function TaskListView() {
                   Todo
                 </Accordion.Header>
                 <Accordion.Body>
-                  <Accordion className="mb-3">
+                  <Accordion className="mb-3 d-none d-md-block">
                     <Accordion.Item eventKey="0" className="task-accordion">
                       <Accordion.Header className="task-accordion-header">
                         <FiPlus

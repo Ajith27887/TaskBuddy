@@ -33,6 +33,11 @@
     border-radius: 8px;
     font-weight: bold;
   }
+  @media (max-width : "500px") {
+	.logout{
+		margin-top: 6%;
+	}
+  }
   .date-picker-container {
     display: flex;
     align-items: center;
