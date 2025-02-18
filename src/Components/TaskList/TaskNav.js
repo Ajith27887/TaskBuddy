@@ -66,17 +66,31 @@ function TaskNav() {
   console.log(currentUser, "url");
 
   return (
-    <Container fluid className="p-5 Task-Container">
+    <Container fluid className="p-2 p-md-5 Task-Container">
       <Row>
-        <Col lg={6}>
-          <div className="d-flex">
-            <TbClipboardList
+        <Col xs={12} 		
+ lg={6}>
+          <div className="d-flex justify-content-between align-items-center">
+			<div className="d-flex">
+			<TbClipboardList
               style={{ width: "32px", height: "32px" }}
               className="mx-2"
             />
-            <h3>TaskBuddy</h3>
+            <h3  >TaskBuddy</h3>
+			</div>
+        
+			<div className="d-flex d-lg-none align-items-center">
+			{photoURL && (
+              <img
+                src={photoURL}
+                alt="profile"
+                style={{ width: "50px", height: "50px", borderRadius: "50%" }}
+              />
+            )}
+            {displayName && <div className="mx-3">{displayName}</div>}
+			</div>
           </div>
-          <div className="mt-4 d-flex  ">
+          <div className="mt-4 d-none d-lg-flex  ">
             <Nav.Link href="/list-view" className=" list">
               {" "}
               <BsList
@@ -85,7 +99,7 @@ function TaskNav() {
               />{" "}
               List
             </Nav.Link>
-            <Nav.Link className="board" href="/board-view">
+            <Nav.Link className="board d-none" href="/board-view">
               <CiViewBoard
                 className="mx-2"
                 style={{ width: "24px", height: "24px" }}
@@ -93,7 +107,7 @@ function TaskNav() {
               Board
             </Nav.Link>
           </div>
-          <div className="mt-2 mx-2 d-flex filter-container">
+          <div className="mt-2 mx-2 d-flex filter-container justify-content-between">
             <p className="filter">Filter by:</p>
             <select
               defaultValue=""
@@ -125,9 +139,10 @@ function TaskNav() {
         </Col>
         <Col
           lg={6}
-          className="d-flex justify-content-start flex-column align-items-end"
+		  xs={12}
+          className="d-flex justify-content-start flex-column align-items-lg-end align-items-normal"
         >
-          <div className="d-flex align-items-center">
+          <div className="d-none align-items-center d-lg-flex">
             {photoURL && (
               <img
                 src={photoURL}
@@ -139,17 +154,17 @@ function TaskNav() {
           </div>
           <Button className="logout" onClick={logout}>
             {" "}
-            <BiLogOut className="mx-2" style={{ fontSize: "24px" }} />
+            <BiLogOut className="mx-2 " style={{ fontSize: "24px" }} />
             Logout
           </Button>
-          <div className="d-flex justify-content-start align-items-baseline mt-3">
+          <div className="d-md-flex justify-content-start align-items-baseline mt-3">
             <input
               type="search"
-              className="search mx-3 p-2"
+              className="search w-100 mx-md-3 p-2 mt-3 mt-md-0"
               placeholder="Search"
               onChange={handleSearchChange}
             ></input>
-            <Button onClick={handleShow} className=" p-3 add-task">
+            <Button onClick={handleShow} className="mt-3 w-100 mt-md-0 p-3 add-task">
               Add Task
             </Button>
           </div>
